@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sailipi Gowlikar — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design tokens ─────────────────────────────── */
+    :root {
+      --ink:      #1a1a2e;
+      --paper:    #f5f0e8;
+      --accent:   #c8553d;        /* warm terracotta */
+      --gold:     #d4a853;        /* complementary gold */
+      --muted:    #6b6560;
+      --card-bg:  #ffffff;
+      --border:   #e0d8cc;
+      --fs-hero:  clamp(2.8rem, 7vw, 5.5rem);
+      --fs-h2:    clamp(1.6rem, 3vw, 2.2rem);
+      --fs-body:  1rem;
+      --radius:   12px;
+      --shadow:   0 4px 24px rgba(26,26,46,0.10);
+    }
+
+    /* ── Reset & base ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: var(--fs-body);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Splash intro ──────────────────────────────── */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    #splash-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      color: var(--paper);
+      letter-spacing: 0.04em;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    #splash-name .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: char-in 0.06s ease forwards;
+    }
+    #splash-name .char.space { width: 0.4em; }
+    #splash-underline {
+      display: block;
+      height: 3px;
+      background: var(--accent);
+      width: 0;
+      margin-top: 10px;
+      animation: line-grow 0.5s ease 2s forwards;
+    }
+    #splash.fade-out { animation: splash-out 0.7s ease 2.8s forwards; }
+
+    @keyframes char-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes line-grow {
+      to { width: 100%; }
+    }
+    @keyframes splash-out {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* ── Navbar ────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(245,240,232,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5vw;
+      height: 64px;
+    }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── Main content (hidden until splash done) ───── */
+    main { padding-top: 64px; opacity: 0; animation: main-appear 0.6s ease 3s forwards; }
+    @keyframes main-appear { to { opacity: 1; } }
+
+    /* ── Hero ──────────────────────────────────────── */
+    #hero {
+      min-height: calc(100vh - 64px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+      padding: 8vh 8vw;
+    }
+    .hero-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-hero);
+      line-height: 1.08;
+      color: var(--ink);
+      margin-bottom: 1.2rem;
+    }
+    .hero-text h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-text .tagline {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 38ch;
+      margin-bottom: 2rem;
+    }
+    .btn-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.8rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200,85,61,0.25); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-ghost { border: 1.5px solid var(--ink); color: var(--ink); }
+    .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .avatar-ring {
+      position: relative;
+      width: clamp(220px, 28vw, 380px);
+      aspect-ratio: 1;
+    }
+    .avatar-ring::before {
+      content: '';
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      border: 2.5px dashed var(--gold);
+      animation: spin-slow 20s linear infinite;
+    }
+    .avatar-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--accent) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 6vw, 6rem);
+      color: #fff;
+      letter-spacing: 0.02em;
+      box-shadow: 0 12px 48px rgba(200,85,61,0.28);
+    }
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+    /* ── Sections ──────────────────────────────────── */
+    section { padding: 7vh 8vw; }
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-h2);
+      color: var(--ink);
+      margin-bottom: 2.5rem;
+    }
+    .divider {
+      width: 48px; height: 3px;
+      background: var(--gold);
+      margin: 0.6rem 0 2.5rem;
+    }
+
+    /* ── About ─────────────────────────────────────── */
+    #about { background: var(--ink); color: var(--paper); }
+    #about .section-label { color: var(--gold); }
+    #about .section-title { color: var(--paper); }
+    #about .divider { background: var(--accent); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .about-body p { color: #c8c2ba; line-height: 1.85; margin-bottom: 1rem; }
+    .about-body p strong { color: var(--gold); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--gold);
+      display: block;
+    }
+    .stat-card .lbl { font-size: 0.8rem; color: #8e8880; letter-spacing: 0.08em; }
+
+    /* ── Project ───────────────────────────────────── */
+    #project { background: var(--paper); }
+    .project-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+    }
+    .project-stripe {
+      background: linear-gradient(160deg, var(--accent) 0%, var(--gold) 100%);
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .project-stripe h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      color: #fff;
+      line-height: 1.25;
+    }
+    .project-stripe .client-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.22);
+      color: #fff;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.8rem;
+      border-radius: 100px;
+      margin-top: 1.5rem;
+      width: fit-content;
+    }
+    .project-body { padding: 3rem 2.5rem; }
+    .project-body p { color: var(--muted); margin-bottom: 1.2rem; line-height: 1.8; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+    .tag {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.78rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      font-weight: 500;
+    }
+
+    /* Dataset highlights ─────────────────────────── */
+    .data-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-top: 2.5rem;
+    }
+    .dh-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.2rem;
+      box-shadow: 0 2px 8px rgba(26,26,46,0.06);
+    }
+    .dh-card .dh-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--accent);
+      display: block;
+      line-height: 1.1;
+    }
+    .dh-card .dh-label { font-size: 0.82rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* ── Skills ────────────────────────────────────── */
+    #skills { background: #f0ece3; }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.2rem;
+    }
+    .skill-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 2px 6px rgba(26,26,46,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .skill-pill:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .skill-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .skill-icon.analytics  { background: #fef3ee; }
+    .skill-icon.data       { background: #fff8ed; }
+    .skill-icon.strategy   { background: #f0f4ff; }
+    .skill-name { font-size: 0.88rem; font-weight: 500; color: var(--ink); }
+
+    /* ── Contact ───────────────────────────────────── */
+    #contact {
+      background: var(--ink);
+      text-align: center;
+      padding: 8vh 8vw;
+    }
+    #contact .section-label { color: var(--gold); }
+    #contact .section-title { color: var(--paper); }
+    #contact .divider { margin: 0.6rem auto 2.5rem; }
+    #contact p { color: #8e8880; max-width: 46ch; margin: 0 auto 2rem; }
+    #contact .btn-primary { font-size: 0.9rem; padding: 0.9rem 2.4rem; }
+    .social-row { display: flex; gap: 1.2rem; justify-content: center; margin-top: 1.5rem; }
+    .social-link {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      color: #8e8880;
+      font-size: 1rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .social-link:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Footer ────────────────────────────────────── */
+    footer {
+      background: #111120;
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.78rem;
+      color: #4a4860;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Responsive ────────────────────────────────── */
+    @media (max-width: 860px) {
+      #hero { grid-template-columns: 1fr; text-align: center; padding: 6vh 6vw; }
+      .hero-visual { margin-top: 2rem; }
+      .hero-text .tagline { margin: 0 auto 2rem; }
+      .btn-row { justify-content: center; }
+      .about-grid { grid-template-columns: 1fr; }
+      .project-card { grid-template-columns: 1fr; }
+      .data-highlights { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .nav-links { display: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .data-highlights { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── SPLASH ──────────────────────────────────── -->
+  <div id="splash">
+    <div style="text-align:center;">
+      <div id="splash-name"></div>
+      <span id="splash-underline"></span>
+    </div>
+  </div>
+
+  <!-- ── NAV ─────────────────────────────────────── -->
+  <nav>
+    <div class="nav-brand">S<span>.</span>Gowlikar</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#project">Project</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── MAIN ─────────────────────────────────────── -->
+  <main>
+
+    <!-- HERO -->
+    <section id="hero">
+      <div class="hero-text">
+        <p class="section-label">Marketing Analytics</p>
+        <h1>Sailipi<br /><em>Gowlikar</em></h1>
+        <p class="tagline">Health Informatics Candidate turning messy, real-world data into marketing strategies that move the needle.</p>
+        <div class="btn-row">
+          <a href="#project" class="btn btn-primary">View Project</a>
+          <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="avatar-ring">
+          <div class="avatar-circle">SG</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="about-grid">
+        <div class="about-body">
+          <p class="section-label">About Me</p>
+          <h2 class="section-title">Bridging Business Strategy &amp; Data</h2>
+          <div class="divider"></div>
+          <p>I'm a Health Informatics student at <strong>Franklin University</strong> in Columbus, Ohio, with a passion for using data to tell stories that drive real business decisions.</p>
+          <p>My focus sits at the intersection of <strong>marketing analytics</strong>, consumer behavior, and data-driven strategy. I thrive on open-ended problems — where there's no single right answer — and I enjoy bringing structure to complex, messy datasets.</p>
+          <p>Outside the classroom, I'm working directly with a real client — <strong>HW Dental</strong> — analyzing patient demographics and marketing channels for a fast-growing dental chain across Central Ohio.</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="num">4,546</span>
+            <span class="lbl">Patients Analyzed</span>
+          </div>
+          <div class="stat-card">
+            <span class="num">4</span>
+            <span class="lbl">Branch Locations</span>
+          </div>
+          <div class="stat-card">
+            <span class="num">21</span>
+            <span class="lbl">Dataset Variables</span>
+          </div>
+          <div class="stat-card">
+            <span class="num">73%</span>
+            <span class="lbl">Referral Coverage</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT -->
+    <section id="project">
+      <p class="section-label">Featured Work</p>
+      <h2 class="section-title">Real-World Project</h2>
+      <div class="divider"></div>
+
+      <div class="project-card">
+        <div class="project-stripe">
+          <div>
+            <h3>HW Dental — Marketing Analytics</h3>
+            <p style="color:rgba(255,255,255,0.75);margin-top:1rem;font-size:0.92rem;line-height:1.7;">Uncovering how a growing Columbus dental chain can better reach its target populations through data-driven insights.</p>
+          </div>
+          <span class="client-tag">Live Client · Central Ohio</span>
+        </div>
+        <div class="project-body">
+          <p>This project uses a de-identified dataset of <strong>4,546 new patients</strong> across HW Dental's Clintonville, Polaris, Sawmill, and Westerville branches — capturing demographics, insurance types, referral sources, geographic distribution, and communication preferences.</p>
+          <p>My analysis focuses on two of the clinic's primary target populations: <strong>Medicaid recipients</strong> and <strong>Spanish-speaking patients</strong> (identified via language field and a name-based Spanish Likelihood model). The goal is to translate raw data into actionable marketing recommendations.</p>
+          <div class="tag-list">
+            <span class="tag">Excel / Python</span>
+            <span class="tag">Patient Segmentation</span>
+            <span class="tag">Referral Channel Analysis</span>
+            <span class="tag">Geographic Mapping</span>
+            <span class="tag">Insurance Mix</span>
+            <span class="tag">Demographic Profiling</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dataset highlights -->
+      <div class="data-highlights">
+        <div class="dh-card">
+          <span class="dh-num">1,897</span>
+          <p class="dh-label">New patients at Westerville — the largest single branch</p>
+        </div>
+        <div class="dh-card">
+          <span class="dh-num">24%</span>
+          <p class="dh-label">Patients flagged High Spanish Likelihood based on name analysis</p>
+        </div>
+        <div class="dh-card">
+          <span class="dh-num">27%</span>
+          <p class="dh-label">Patients with no recorded referral source — a key data gap</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <p class="section-label">Capabilities</p>
+      <h2 class="section-title">Skills &amp; Tools</h2>
+      <div class="divider"></div>
+      <div class="skills-grid">
+        <div class="skill-pill">
+          <div class="skill-icon analytics">📊</div>
+          <span class="skill-name">Marketing Analytics</span>
+        </div>
+        <div class="skill-pill">
+          <div class="skill-icon data">🐍</div>
+          <span class="skill-name">Python / Pandas</span>
+        </div>
+        <div class="skill-pill">
+          <div class="skill-icon analytics">📈</div>
+          <span class="skill-name">Excel & Power BI</span>
+        </div>
+        <div class="skill-pill">
+          <div class="skill-icon strategy">🎯</div>
+          <span class="skill-name">Market Segmentation</span>
+        </div>
+        <div class="skill-pill">
+          <div class="skill-icon data">🗺️</div>
+          <span class="skill-name">Geographic Analysis</span>
+        </div>
+        <div class="skill-pill">
+          <div class="skill-icon analytics">🔍</div>
+          <span class="skill-name">Consumer Research</span>
+        </div>
+        <div class="skill-pill">
+          <div class="skill-icon strategy">💡</div>
+          <span class="skill-name">Data Storytelling</span>
+        </div>
+        <div class="skill-pill">
+          <div class="skill-icon data">🗄️</div>
+          <span class="skill-name">Data Cleaning</span>
+        </div>
+        <div class="skill-pill">
+          <div class="skill-icon strategy">🤝</div>
+          <span class="skill-name">Client Consulting</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <p class="section-label">Let's Connect</p>
+      <h2 class="section-title">Get in Touch</h2>
+      <div class="divider"></div>
+      <p>Interested in collaborating or discussing marketing analytics? I'd love to hear from you.</p>
+      <a href="mailto:sailipi.gowlikar@email.com" class="btn btn-primary">Send a Message</a>
+      <div class="social-row">
+        <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+        <a href="#" class="social-link" aria-label="GitHub">gh</a>
+        <a href="#" class="social-link" aria-label="Email">✉</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    &copy; 2026 Sailipi Gowlikar &nbsp;·&nbsp; Franklin University, Columbus OH
+  </footer>
+
+  <!-- ── SPLASH JS ─────────────────────────────────── -->
+  <script>
+    (function () {
+      const name = "Sailipi Gowlikar";
+      const container = document.getElementById("splash-name");
+
+      // Build character spans with staggered animation-delay
+      name.split("").forEach((ch, i) => {
+        const span = document.createElement("span");
+        span.classList.add("char");
+        if (ch === " ") span.classList.add("space");
+        span.textContent = ch === " " ? "\u00A0" : ch;
+        // Each char animates in sequentially, 80ms apart
+        span.style.animationDelay = `${i * 0.08}s`;
+        container.appendChild(span);
+      });
+
+      // Add fade-out class to trigger CSS animation
+      const splash = document.getElementById("splash");
+      splash.classList.add("fade-out");
+    })();
+  </script>
+</body>
+</html>
